@@ -1,19 +1,20 @@
-# My Homepage
+# My Homepage (Vercel Fullstack)
 
-A simple HTML/CSS homepage with a soft blue gradient background, a cloud illustration, and a welcoming intro.
+A simple Vercel-ready fullstack app to search and display live flight data from the OpenSky Network API.
 
 ## Features
-- Soft blue gradient background
-- Stylized cloud graphic
-- "Hello to the sky" intro
-- "Flight Search" button (non-functional)
+- Frontend: HTML/CSS/JS static site
+- Backend: Node.js API route (`/api/flights`) fetches the first 10 flights from OpenSky
+- Click "Search Flights" to view the latest flights in a table
 
-## Usage
-Open `index.html` in your browser to view the homepage.
+## Deployment
+- Deploy this project to Vercel (https://vercel.com/)
+- The backend API route is in `/api/flights.js`
+- The frontend is served from `index.html` and related static files
 
-## Customization
-- Edit `style.css` to change the appearance.
-- Modify `index.html` to update content or structure.
+## Local Development
+- Requires Node.js for backend API route (handled by Vercel in production)
+- No local Node.js needed for static frontend only
 
 ---
 Created January 2026
