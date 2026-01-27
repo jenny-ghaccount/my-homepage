@@ -80,22 +80,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const todayStr = new Date().toISOString().slice(0, 10);
   datePicker.value = todayStr;
 
-  let states = [];
-  async function loadFlights() {
-    states = await fetchFlights();
-    statusDiv.textContent = '';
-    resultsDiv.innerHTML = '';
-  }
-
-  await loadFlights();
-
-  searchBtn.onclick = () => {
+  searchBtn.onclick = async () => {
     const dateStr = datePicker.value;
     if (!dateStr) {
       resultsDiv.innerHTML = '<p>Please select a date.</p>';
       return;
     }
-    const flights = filterFlightsByDate(states, dateStr);
+    statusDiv.textContent = 'Loading flight data...';
+    const states = await fetchFlights();
+    statusDiv.textContent = '';
+    const flights = filterFlightsByDate(states, dateStr).slice(0, 20);
     renderResults(flights);
   };
 });
