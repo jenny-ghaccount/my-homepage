@@ -12,8 +12,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Fetch all states from OpenSky API
   async function fetchFlights() {
     statusDiv.textContent = 'Loading flight data...';
+    const corsProxy = 'https://corsproxy.io/?';
+    const apiUrl = 'https://opensky-network.org/api/states/all';
     try {
-      const response = await fetch('https://opensky-network.org/api/states/all');
+      const response = await fetch(corsProxy + encodeURIComponent(apiUrl));
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       return data.states || [];
