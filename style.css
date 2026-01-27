@@ -1,12 +1,60 @@
 
+
 body {
   min-height: 100vh;
   margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #e3f2fd;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: linear-gradient(180deg, #b3e0ff 0%, #e3f2fd 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.sky-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sky-title {
+  font-family: 'Pacifico', cursive;
+  color: #1976d2;
+  font-size: 3rem;
+  text-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+  z-index: 2;
+}
+
+.cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0.85;
+  box-shadow: 30px 10px 60px 10px #b3e0ff;
+}
+.cloud1 {
+  width: 120px;
+  height: 60px;
+  top: 15%;
+  left: 20%;
+  box-shadow: 60px 20px 80px 10px #b3e0ff;
+}
+.cloud2 {
+  width: 180px;
+  height: 90px;
+  top: 30%;
+  right: 18%;
+  box-shadow: 80px 30px 100px 10px #b3e0ff;
+}
+.cloud3 {
+  width: 100px;
+  height: 50px;
+  bottom: 20%;
+  left: 35%;
+  box-shadow: 40px 15px 60px 10px #b3e0ff;
 }
 }
 h1 {
