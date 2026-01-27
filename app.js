@@ -1,16 +1,19 @@
 // This script fetches today's flights from the OpenSky Network API, extracts unique destinations, and allows searching for flights by selected destination.
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const dropdown = document.getElementById('destination-dropdown');
+
+  const datePicker = document.getElementById('date-picker');
   const resultsDiv = document.getElementById('results');
   const searchBtn = document.getElementById('search-btn');
   const statusDiv = document.getElementById('status');
 
-  // Helper to get today's midnight UTC timestamp
-  function getTodayMidnightUTC() {
-    const now = new Date();
-    return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) / 1000;
+
+  // Helper to get midnight UTC timestamp for a given date string (yyyy-mm-dd)
+  function getMidnightUTC(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) / 1000;
   }
+
 
   // Fetch all states from OpenSky API
   async function fetchFlights() {
@@ -26,23 +29,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Extract unique destinations for today
-  function getDestinations(states) {
-    const today = getTodayMidnightUTC();
-    const destinations = new Set();
-    states.forEach(s => {
-      // s[8] = lastSeen (timestamp), s[12] = destination airport
-      if (s[8] && s[8] >= today && s[12]) {
-        destinations.add(s[12]);
-      }
-    });
-    return Array.from(destinations).sort();
-  }
 
-  // Filter flights by destination
-  function filterFlights(states, dest) {
-    const today = getTodayMidnightUTC();
-    return states.filter(s => s[8] && s[8] >= today && s[12] === dest);
+  // Filter flights by date (flights seen today)
+  function filterFlightsByDate(states, dateStr) {
+    const midnight = getMidnightUTC(dateStr);
+    const nextMidnight = midnight + 86400;
+    return states.filter(s => s[8] && s[8] >= midnight && s[8] < nextMidnight);
   }
 
   // Get airline name from callsign (simple heuristic)
@@ -83,21 +75,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       '</tbody></table>';
   }
 
-  // Main logic
-  const states = await fetchFlights();
-  if (!states.length) return;
-  statusDiv.textContent = '';
-  const destinations = getDestinations(states);
-  dropdown.innerHTML = '<option value="">Select destination</option>' +
-    destinations.map(d => `<option value="${d}">${d}</option>`).join('');
+
+  // Set date picker to today by default
+  const todayStr = new Date().toISOString().slice(0, 10);
+  datePicker.value = todayStr;
+
+  let states = [];
+  async function loadFlights() {
+    states = await fetchFlights();
+    statusDiv.textContent = '';
+    resultsDiv.innerHTML = '';
+  }
+
+  await loadFlights();
 
   searchBtn.onclick = () => {
-    const dest = dropdown.value;
-    if (!dest) {
-      resultsDiv.innerHTML = '<p>Please select a destination.</p>';
+    const dateStr = datePicker.value;
+    if (!dateStr) {
+      resultsDiv.innerHTML = '<p>Please select a date.</p>';
       return;
     }
-    const flights = filterFlights(states, dest);
+    const flights = filterFlightsByDate(states, dateStr);
     renderResults(flights);
   };
 });
