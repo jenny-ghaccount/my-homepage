@@ -12,7 +12,18 @@
     <div class="cloud cloud1"></div>
     <div class="cloud cloud2"></div>
     <div class="cloud cloud3"></div>
-    <h1 class="sky-title">Hello to the sky</h1>
+      <h1 class="sky-title">Hello to the sky</h1>
+      <button id="colorBtn">Change Background Color</button>
+      <script>
+        const colors = [
+          '#cce6ff', '#e3f0ff', '#ffe4e1', '#e0ffe0', '#fff9c4', '#f3e5f5', '#e1f5fe', '#fbe9e7'
+        ];
+        let current = 0;
+        document.getElementById('colorBtn').onclick = function() {
+          current = (current + 1) % colors.length;
+          document.body.style.background = colors[current];
+        };
+      </script>
   </div>
 </body>
 </html>
