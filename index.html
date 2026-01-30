@@ -9,15 +9,142 @@
 <body>
   <h1>Hello to the sky</h1>
   <button id="colorBtn">Change Background Color</button>
+  <canvas id="confettiCanvas"></canvas>
   
   <script>
     const colors = ['#cce6ff', '#ffe4e1', '#e0ffe0', '#fff9c4', '#f3e5f5'];
     let current = 0;
+    let yellowCount = 0;
+    let accumulatedConfetti = [];
+    let pacmanActive = false;
+    let mouseX = 0, mouseY = 0;
+    let pacmanX = 100, pacmanY = 100;
+    
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    // Mouse tracking
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Resize canvas
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    
+    function launchConfetti() {
+      yellowCount++;
+      console.log('Yellow backgrounds:', yellowCount);
+      
+      // Create new confetti
+      for (let i = 0; i < 30; i++) {
+        accumulatedConfetti.push({
+          x: Math.random() * canvas.width,
+          y: -50,
+          vx: (Math.random() - 0.5) * 2,
+          vy: 2 + Math.random() * 3,
+          color: `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`,
+          size: 4 + Math.random() * 4,
+          settled: false
+        });
+      }
+      
+      // Check if pac-man should appear
+      if (yellowCount >= 2 && !pacmanActive) {
+        pacmanActive = true;
+        console.log('Pac-Man activated!');
+      }
+      
+      animate();
+    }
+    
+    function drawPacman(x, y) {
+      const size = 20;
+      const time = Date.now() * 0.01;
+      const mouthAngle = Math.abs(Math.sin(time)) * 0.6 + 0.3;
+      
+      // Pac-Man body
+      ctx.fillStyle = '#ffff00';
+      ctx.beginPath();
+      ctx.arc(x, y, size, mouthAngle, 2 * Math.PI - mouthAngle);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Eye
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(x - 6, y - 6, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw confetti
+      for (let i = accumulatedConfetti.length - 1; i >= 0; i--) {
+        const confetti = accumulatedConfetti[i];
+        
+        if (!confetti.settled) {
+          confetti.y += confetti.vy;
+          confetti.x += confetti.vx;
+          
+          // Check if hit bottom
+          if (confetti.y >= canvas.height - confetti.size) {
+            confetti.y = canvas.height - confetti.size;
+            confetti.settled = true;
+          }
+        }
+        
+        // Check if pac-man eats this confetti
+        if (pacmanActive && confetti.settled) {
+          const dx = pacmanX - confetti.x;
+          const dy = pacmanY - confetti.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 25) {
+            accumulatedConfetti.splice(i, 1);
+            continue;
+          }
+        }
+        
+        // Draw confetti
+        ctx.fillStyle = confetti.color;
+        ctx.fillRect(confetti.x, confetti.y, confetti.size, confetti.size);
+      }
+      
+      // Update and draw pac-man
+      if (pacmanActive) {
+        pacmanX += (mouseX - pacmanX) * 0.05;
+        pacmanY += (mouseY - pacmanY) * 0.05;
+        drawPacman(pacmanX, pacmanY);
+        
+        // Hide pac-man if no confetti left
+        if (accumulatedConfetti.length === 0) {
+          pacmanActive = false;
+          yellowCount = 0;
+          console.log('Pac-Man done cleaning!');
+        }
+      }
+      
+      // Continue animation if needed
+      if (accumulatedConfetti.length > 0) {
+        requestAnimationFrame(animate);
+      }
+    }
     
     document.getElementById('colorBtn').onclick = function() {
       current = (current + 1) % colors.length;
       document.body.style.backgroundColor = colors[current];
       console.log('Changed to:', colors[current]);
+      
+      // Launch confetti on yellow
+      if (colors[current] === '#fff9c4') {
+        launchConfetti();
+      }
     };
   </script>
 </body>
