@@ -54,9 +54,9 @@
           x: Math.random() * canvas.width,
           y: -50,
           vx: (Math.random() - 0.5) * 2,
-          vy: 2 + Math.random() * 3,
+          vy: 1 + Math.random() * 2, // Slower falling speed
           color: `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`,
-          size: 4 + Math.random() * 4,
+          size: 8 + Math.random() * 8, // Double the size (8-16px)
           settled: false
         });
       }
