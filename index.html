@@ -75,20 +75,18 @@
       const time = Date.now() * 0.01;
       const mouthAngle = Math.abs(Math.sin(time)) * 0.6 + 0.3;
       
-      // Determine mouth direction based on facing
-      let startAngle, endAngle;
-      if (facingRight) {
-        startAngle = mouthAngle;
-        endAngle = 2 * Math.PI - mouthAngle;
-      } else {
-        startAngle = Math.PI - mouthAngle;
-        endAngle = Math.PI + mouthAngle;
-      }
-      
-      // Pac-Man body with current color
+      // Draw Pac-Man body with proper mouth direction
       ctx.fillStyle = pacmanColor;
       ctx.beginPath();
-      ctx.arc(x, y, size, startAngle, endAngle);
+      
+      if (facingRight) {
+        // Facing right: mouth opens to the right
+        ctx.arc(x, y, size, mouthAngle, 2 * Math.PI - mouthAngle);
+      } else {
+        // Facing left: mouth opens to the left
+        ctx.arc(x, y, size, Math.PI - mouthAngle, Math.PI + mouthAngle);
+      }
+      
       ctx.lineTo(x, y);
       ctx.closePath();
       ctx.fill();
