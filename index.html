@@ -4,81 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hello to the Sky</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="sky-container">
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
-      <h1 class="sky-title">Hello to the sky</h1>
-      <button id="colorBtn">Change Background Color</button>\n      <div class="logo-links">\n        <a href="https://www.google.com" target="_blank" class="logo-link" title="Click to visit Google">\n          <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google" class="logo-img">\n          <button class="logo-btn">Google</button>\n        </a>\n        <a href="https://www.slalom.com" target="_blank" class="logo-link" title="Click to visit Slalom">\n          <img src="slalom_logo.jpeg" alt="Slalom" class="logo-img">\n          <button class="logo-btn">Slalom</button>\n        </a>\n      </div>
-      <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999;display:none;"></canvas>
-      <script>
-        const colors = [
-          '#cce6ff', '#e3f0ff', '#ffe4e1', '#e0ffe0', '#fff9c4', '#f3e5f5', '#e1f5fe', '#fbe9e7'
-        ];
-        let current = 0;
-        const yellowTones = ['#fff9c4'];
-        const confettiCanvas = document.getElementById('confettiCanvas');
-        const ctx = confettiCanvas.getContext('2d');
-        function resizeCanvas() {
-          confettiCanvas.width = window.innerWidth;
-          confettiCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function launchConfetti() {
-          confettiCanvas.style.display = 'block';
-          const confettiCount = 120;
-          const confetti = [];
-          for (let i = 0; i < confettiCount; i++) {
-            confetti.push({
-              x: Math.random() * confettiCanvas.width,
-              y: Math.random() * -confettiCanvas.height,
-              r: 5 + Math.random() * 8,
-              d: 2 + Math.random() * 3,
-              color: `hsl(${Math.floor(Math.random()*360)},90%,60%)`,
-              tilt: Math.random() * 10 - 5
-            });
-          }
-          let frame = 0;
-          function draw() {
-            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-            for (let i = 0; i < confettiCount; i++) {
-              let c = confetti[i];
-              ctx.beginPath();
-              ctx.ellipse(c.x, c.y, c.r, c.r/2, c.tilt, 0, 2 * Math.PI);
-              ctx.fillStyle = c.color;
-              ctx.fill();
-              c.y += c.d;
-              c.x += Math.sin(frame/10 + i);
-              c.tilt += Math.random() * 0.2 - 0.1;
-              if (c.y > confettiCanvas.height) {
-                c.y = Math.random() * -20;
-                c.x = Math.random() * confettiCanvas.width;
-              }
-            }
-            frame++;
-            if (frame < 120) {
-              requestAnimationFrame(draw);
-            } else {
-              confettiCanvas.style.display = 'none';
-            }
-          }
-          draw();
-        }
-
-        document.getElementById('colorBtn').onclick = function() {
-          current = (current + 1) % colors.length;
-          document.body.style.background = colors[current];\n          document.body.style.backgroundImage = 'none';
-          if (yellowTones.includes(colors[current])) {
-            launchConfetti();
-          }
-        };
-      </script>
-  </div>
+  <h1>Hello to the sky</h1>
+  <button id="colorBtn">Change Background Color</button>
+  
+  <script>
+    const colors = ['#cce6ff', '#ffe4e1', '#e0ffe0', '#fff9c4', '#f3e5f5'];
+    let current = 0;
+    
+    document.getElementById('colorBtn').onclick = function() {
+      current = (current + 1) % colors.length;
+      document.body.style.backgroundColor = colors[current];
+      console.log('Changed to:', colors[current]);
+    };
+  </script>
 </body>
 </html>
