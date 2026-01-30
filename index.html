@@ -18,15 +18,22 @@
     let accumulatedConfetti = [];
     let pacmanActive = false;
     let mouseX = 0, mouseY = 0;
+    let lastMouseX = 0;
     let pacmanX = 100, pacmanY = 100;
+    let facingRight = true;
+    let pacmanColor = '#ffff00'; // Default yellow
     
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    // Mouse tracking
+    // Mouse tracking with direction detection
     document.addEventListener('mousemove', (e) => {
+      if (mouseX !== 0) {
+        facingRight = e.clientX > lastMouseX;
+      }
+      lastMouseX = mouseX;
       mouseX = e.clientX;
       mouseY = e.clientY;
     });
@@ -68,18 +75,29 @@
       const time = Date.now() * 0.01;
       const mouthAngle = Math.abs(Math.sin(time)) * 0.6 + 0.3;
       
-      // Pac-Man body
-      ctx.fillStyle = '#ffff00';
+      // Determine mouth direction based on facing
+      let startAngle, endAngle;
+      if (facingRight) {
+        startAngle = mouthAngle;
+        endAngle = 2 * Math.PI - mouthAngle;
+      } else {
+        startAngle = Math.PI - mouthAngle;
+        endAngle = Math.PI + mouthAngle;
+      }
+      
+      // Pac-Man body with current color
+      ctx.fillStyle = pacmanColor;
       ctx.beginPath();
-      ctx.arc(x, y, size, mouthAngle, 2 * Math.PI - mouthAngle);
+      ctx.arc(x, y, size, startAngle, endAngle);
       ctx.lineTo(x, y);
       ctx.closePath();
       ctx.fill();
       
-      // Eye
+      // Eye positioned based on direction
       ctx.fillStyle = '#000';
       ctx.beginPath();
-      ctx.arc(x - 6, y - 6, 2, 0, Math.PI * 2);
+      const eyeX = facingRight ? x - 6 : x + 6;
+      ctx.arc(eyeX, y - 6, 2, 0, Math.PI * 2);
       ctx.fill();
     }
     
@@ -106,6 +124,9 @@
           const dx = pacmanX - confetti.x;
           const dy = pacmanY - confetti.y;
           if (Math.sqrt(dx*dx + dy*dy) < 25) {
+            // Change Pac-Man color to confetti color
+            pacmanColor = confetti.color;
+            console.log('Pac-Man ate', confetti.color);
             accumulatedConfetti.splice(i, 1);
             continue;
           }
@@ -126,6 +147,7 @@
         if (accumulatedConfetti.length === 0) {
           pacmanActive = false;
           yellowCount = 0;
+          pacmanColor = '#ffff00'; // Reset to yellow
           console.log('Pac-Man done cleaning!');
         }
       }
