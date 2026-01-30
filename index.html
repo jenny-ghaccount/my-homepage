@@ -73,7 +73,7 @@
 
         document.getElementById('colorBtn').onclick = function() {
           current = (current + 1) % colors.length;
-          document.body.style.backgroundImage = 'none';\n          document.body.style.backgroundColor = colors[current];
+          document.body.style.background = colors[current];\n          document.body.style.backgroundImage = 'none';
           if (yellowTones.includes(colors[current])) {
             launchConfetti();
           }
