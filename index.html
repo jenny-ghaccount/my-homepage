@@ -83,8 +83,8 @@
         // Facing right: mouth opens to the right
         ctx.arc(x, y, size, mouthAngle, 2 * Math.PI - mouthAngle);
       } else {
-        // Facing left: mouth opens to the left
-        ctx.arc(x, y, size, Math.PI - mouthAngle, Math.PI + mouthAngle);
+        // Facing left: mouth opens to the left  
+        ctx.arc(x, y, size, Math.PI + mouthAngle, Math.PI - mouthAngle + 2 * Math.PI);
       }
       
       ctx.lineTo(x, y);
